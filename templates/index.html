@@ -1,1 +1,94 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Super Resolution</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    h1 {
+      margin-bottom: 8px;
+    }
+    form {
+      margin: 24px 0;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+    }
+    input, select, button {
+      margin-top: 10px;
+      display: block;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 16px;
+      cursor: pointer;
+    }
+    .error {
+      color: #b00020;
+      margin-top: 16px;
+    }
+    .results {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 30px;
+    }
+    img {
+      max-width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    .card {
+      border: 1px solid #eee;
+      padding: 16px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Image Super Resolution</h1>
+  <p>Upload an image and upscale it with your trained ESPCN model.</p>
+
+  <form method="POST" enctype="multipart/form-data">
+    <label for="image">Choose image</label>
+    <input type="file" name="image" id="image" accept="image/*" required />
+
+    <label for="scale">Choose scale</label>
+    <select name="scale" id="scale">
+      <option value="2" {% if selected_scale == 2 %}selected{% endif %}>x2</option>
+      <option value="3" {% if selected_scale == 3 %}selected{% endif %}>x3</option>
+      <option value="4" {% if selected_scale == 4 %}selected{% endif %}>x4</option>
+      <option value="8" {% if selected_scale == 8 %}selected{% endif %}>x8</option>
+    </select>
+
+    <button type="submit">Upscale</button>
+  </form>
+
+  {% if error %}
+    <div class="error">{{ error }}</div>
+  {% endif %}
+
+  {% if original_file and output_file %}
+    <div class="results">
+      <div class="card">
+        <h3>Original</h3>
+        <img src="{{ url_for('uploaded_file', filename=original_file) }}" alt="Original image" />
+      </div>
+      <div class="card">
+        <h3>Upscaled</h3>
+        <img src="{{ url_for('uploaded_file', filename=output_file) }}" alt="Upscaled image" />
+        <p>
+          <a href="{{ url_for('uploaded_file', filename=output_file) }}" target="_blank">Open full image</a>
+        </p>
+      </div>
+    </div>
+  {% endif %}
+</body>
+</html>
